@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
-<title>Niva Velassaru — карта острова</title>
+<title>Niva Velassaru — Island Map</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Flex:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0..1,0" rel="stylesheet">
@@ -221,12 +221,12 @@
 <div class="appbar">
   <div class="appbar-eyebrow">South Malé Atoll · nivavelassaru.com</div>
   <div class="appbar-title">Niva Velassaru</div>
-  <div class="appbar-sub">Часы работы, дресс-код и меню с ценами — тапни на метку</div>
+  <div class="appbar-sub">Opening hours, dress code and menu prices — tap a pin</div>
 </div>
 
 <div class="segrow" id="viewToggle">
-  <div class="seg active" data-view="schematic"><span class="msi">map</span>Схема отеля</div>
-  <div class="seg" data-view="satellite"><span class="msi">my_location</span>Спутник · моё место</div>
+  <div class="seg active" data-view="schematic"><span class="msi">map</span>Resort Map</div>
+  <div class="seg" data-view="satellite"><span class="msi">my_location</span>Satellite · My Location</div>
 </div>
 
 <div id="schematicView">
@@ -256,7 +256,7 @@
     <g transform="translate(685,520)">
       <path d="M0,0 C-14,0 -25,11 -25,25 C-25,42 0,62 0,62 C0,62 25,42 25,25 C25,11 14,0 0,0 Z" fill="var(--md-tertiary)" stroke="#0E1414" stroke-width="2"/>
       <circle cx="0" cy="24" r="9" fill="#0E1414"/>
-      <text x="0" y="-8" text-anchor="middle" font-size="8.5" fill="#0E1414" font-family="Roboto" font-weight="700" letter-spacing="0.5">СТЕНД</text>
+      <text x="0" y="-8" text-anchor="middle" font-size="8.5" fill="#0E1414" font-family="Roboto" font-weight="700" letter-spacing="0.5">SIGNBOARD</text>
     </g>
     <g id="pinsLayer"></g>
     <g transform="translate(1195,860)" opacity="0.8">
@@ -270,19 +270,19 @@
   </svg>
   <div class="fab" id="fabLegend"><span class="msi">list</span></div>
 </div>
-<div class="zoom-hint"><span class="msi" style="font-size:15px;vertical-align:-3px;">pinch_zoom_out</span> Раздвиньте пальцы, чтобы приблизить карту для точного тапа</div>
+<div class="zoom-hint"><span class="msi" style="font-size:15px;vertical-align:-3px;">pinch_zoom_out</span> Pinch to zoom in for a more precise tap</div>
 
 <div class="section-pad">
   <div class="card">
-    <div class="card-title">Легенда острова</div>
+    <div class="card-title">Island Legend</div>
     <div id="legendList"></div>
   </div>
 </div>
 
 <div class="infocard">
   <span class="msi" style="font-size:16px;vertical-align:-3px;">info</span>
-  <b>Данные</b> — с официального сайта nivavelassaru.com (часы, дресс-код, PDF-меню) и фото эвакуационной схемы отеля (форма острова, номера вилл). Цены в USD, включают 10% сервисный сбор и 17% гос. налог.
-  <div class="phone"><span class="msi">emergency</span> Экстренный номер острова: 6656166</div>
+  <b>Data source</b> — the official site nivavelassaru.com (hours, dress code, PDF menus) and a photo of the hotel's evacuation map (island shape, villa numbers). Prices in USD, include 10% service charge and 17% government tax.
+  <div class="phone"><span class="msi">emergency</span> Island emergency number: 6656166</div>
 </div>
 <div class="footer-space"></div>
 </div><!-- /schematicView -->
@@ -291,8 +291,8 @@
   <div class="geo-banner" id="geoBanner">
     <span class="msi">info</span>
     <div>
-      <span id="geoBannerText">Разреши доступ к геолокации, чтобы видеть себя на карте острова.</span>
-      <div><button id="geoRetryBtn" onclick="startGeo()">Включить геолокацию</button></div>
+      <span id="geoBannerText">Allow location access to see yourself on the island map.</span>
+      <div><button id="geoRetryBtn" onclick="startGeo()">Enable location</button></div>
     </div>
   </div>
   <div class="mapzone" style="position:relative;">
@@ -301,13 +301,13 @@
   </div>
   <div class="sat-note">
     <span class="msi" style="font-size:15px;vertical-align:-3px;">verified</span>
-    Показаны только точки с подтверждёнными координатами (Google Maps): Reception, Fen Bar, Turquoise, Etesian, Sand.
-    Остальные объекты (Vela, Sora, Chill Bar, LIME Spa, дайв-центр, теннис, фитнес) — координаты не подтверждены,
-    смотри их на вкладке «Схема отеля».
+    Only pins with confirmed coordinates (Google Maps) are shown: Reception, Fen Bar, Turquoise, Etesian, Sand.
+    Other venues (Vela, Sora, Chill Bar, LIME Spa, dive centre, tennis, fitness) have unconfirmed coordinates —
+    find them on the "Resort Map" tab.
   </div>
   <div class="sat-legend">
     <div class="card">
-      <div class="card-title">Точки на спутниковой карте</div>
+      <div class="card-title">Pins on the satellite map</div>
       <div id="satLegendList"></div>
     </div>
   </div>
@@ -334,42 +334,42 @@
 
 <script>
 const cats = {
-  dining:  {label:'Рестораны и бары', color:'#FF7A5C', dark:'#3A1C0F', icon:'restaurant'},
-  active:  {label:'Спорт и спа',       color:'#5DDBE0', dark:'#00373A', icon:'spa'},
-  service: {label:'Сервисы',           color:'#AECBC9', dark:'#1B3534', icon:'medical_services'}
+  dining:  {label:'Restaurants & Bars', color:'#FF7A5C', dark:'#3A1C0F', icon:'restaurant'},
+  active:  {label:'Sport & Spa',       color:'#5DDBE0', dark:'#00373A', icon:'spa'},
+  service: {label:'Services',           color:'#AECBC9', dark:'#1B3534', icon:'medical_services'}
 };
 
 const pois = [
-  {n:1, x:713, y:553, lat:4.1211602, lng:73.4370184, cat:'service', name:'Reception', hours:'24/7', desc:'Ресепшен острова — точка прибытия, старт всех маршрутов и главного пирса.'},
+  {n:1, x:713, y:553, lat:4.1211602, lng:73.4370184, cat:'service', name:'Reception', hours:'24/7', desc:'The island reception — arrival point, start of all routes and the main jetty.'},
 
-  {n:2, x:708, y:584, lat:4.1204977, lng:73.4364514, cat:'dining', name:'Fen Bar', hours:'11:00 – 00:00', type:'Коктейли и напитки', dress:'Barefoot is better',
-   desc:'Современный лаунж-бар у лагуны: авторские коктейли, лёгкие закуски и вечерняя живая музыка.',
-   hl:['Напитки и лёгкие закуски весь день','Авторские настойки миксологов','Живая музыка по вечерам'],
+  {n:2, x:708, y:584, lat:4.1204977, lng:73.4364514, cat:'dining', name:'Fen Bar', hours:'11:00 – 00:00', type:'Cocktails & Drinks', dress:'Barefoot is better',
+   desc:'A modern lounge bar by the lagoon: signature cocktails, light bites and live evening music.',
+   hl:['Drinks and light bites all day','Signature mixologist infusions','Live music in the evenings'],
    menu:[
-     {name:'Buffalo Chicken Wings', desc:'Домашний BBQ-соус, рокфор, соты', price:'$23'},
-     {name:'Deep-Fried Calamari', desc:'Кальмары в семолине, айоли', price:'$23'},
+     {name:'Buffalo Chicken Wings', desc:'Homemade BBQ sauce, Roquefort, honeycomb', price:'$23'},
+     {name:'Deep-Fried Calamari', desc:'Semolina-dusted calamari, aioli', price:'$23'},
      {name:'Classic / Espresso Martini', desc:'', price:'$15–16'},
      {name:'Passion Fruit Martini', price:'$16'}
    ],
-   menuNote:'Тапас-меню 11:00–18:00 · Pool Bar меню (салаты/сэндвичи/пицца) 11:00–18:00',
+   menuNote:'Tapas menu served 11:00–18:00 · Pool Bar menu (salads/sandwiches/pizza) 11:00–18:00',
    pdfs:[{label:'Cocktail Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Signature-Cocktail-Menu-fen-bar.pdf'},
          {label:'Pool Bar Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Infinity-Pool-Bar-Menu.pdf'}]},
 
   {n:3, x:733, y:600, lat:4.1202455, lng:73.4369572, cat:'dining', name:'Turquoise', hours:'12:00 – 22:00', type:'International', dress:'Island ease',
-   desc:'Непринуждённый ресторан у пляжа со смешением средиземноморской, азиатской и западной кухни.',
-   hl:['Расслабленный beachside-формат','Смешение кухонь: Mediterranean · Asian · Western','Отличная точка понаблюдать за жизнью острова'],
+   desc:'A relaxed beachside restaurant blending Mediterranean, Asian and Western cuisine.',
+   hl:['Laid-back beachside setting','A blend of Mediterranean · Asian · Western cuisine','A great spot to watch island life go by'],
    menu:[
      {name:'BBQ Chicken Wings', price:'$23'},
-     {name:'Tom Kha Gai', desc:'Тайский суп на кокосовом молоке', price:'$23'},
-     {name:'Wellness Super Food Salad', desc:'Киноа, авокадо, манго', price:'$29'},
+     {name:'Tom Kha Gai', desc:'Thai coconut-milk soup', price:'$23'},
+     {name:'Wellness Super Food Salad', desc:'Quinoa, avocado, mango', price:'$29'},
      {name:'Caesar Salad', price:'$30'}
    ],
    pdfs:[{label:'Food Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Turquoise-Menu-Food-Only.pdf'},
          {label:'Beverage Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/TURQUOISE-BEVERAGE-MENU.pdf'}]},
 
-  {n:4, x:778, y:619, cat:'dining', name:'Vela', hours:'Завтрак 7:00–10:30 · Ужин 19:00–22:00', type:'Buffet, International', dress:'As you are',
-   desc:'Основной ресторан острова: интернациональный шведский стол, live-cooking и тематические ужины.',
-   hl:['Live-cooking и десертные станции','Тематические вечера','Шеф-повара готовят блюда родной кухни'],
+  {n:4, x:778, y:619, cat:'dining', name:'Vela', hours:'Breakfast 7:00–10:30 · Dinner 19:00–22:00', type:'Buffet, International', dress:'As you are',
+   desc:'The island\u2019s main restaurant: an international buffet, live cooking and themed dinner nights.',
+   hl:['Live-cooking stations and dessert bars','Themed evenings','Chefs cooking dishes from their home countries'],
    menu:[
      {name:'Bellini / Kir Royale', price:'$17–18'},
      {name:'Classic Mojito', price:'$15'},
@@ -379,25 +379,25 @@ const pois = [
    pdfs:[{label:'Beverage Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Vela-Beverage-Menu-.pdf'}]},
 
   {n:5, x:819, y:605, lat:4.1207760, lng:73.4370542, cat:'dining', name:'Etesian', hours:'19:00 – 22:00', type:'European & Mediterranean', dress:'Island chic',
-   desc:'Fine dining c шеф-сет-меню и большим винным погребом — для особых ужинов.',
-   hl:['Сет-меню от шефа','Богатая винная карта','Идеально для приватного ужина'],
+   desc:'Fine dining with a chef\u2019s set menu and an extensive wine cellar — for special evenings.',
+   hl:['Chef\u2019s curated set menu','An extensive wine list','Perfect for a private dinner'],
    menu:[
      {name:'Chilled & Baked Oyster Combo', price:'$42'},
      {name:'Lobster Catalana', price:'$68'},
      {name:'Tagliatelle Truffle', price:'$42'},
      {name:'Foie Gras', price:'$50'}
    ],
-   menuNote:'Сет: 3 блюда — $90/чел · 4 блюда — $105/чел (для гостей на Half/Full Board — минус 30%)',
+   menuNote:'Set menu: 3 courses — $90/pp · 4 courses — $105/pp (30% off for Half/Full Board guests)',
    pdfs:[{label:'Set Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Etesian-Menu.pdf'},
          {label:'Beverage Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Etesian-Beverage-Menu-.pdf'}]},
 
-  {n:6, x:763, y:640, lat:4.1201843, lng:73.4370235, cat:'dining', name:'Sand', hours:'19:00 – 22:00', type:'Seafood, International', dress:'Barefoot и готовность к пиршеству',
-   desc:'Ужин у самой кромки воды — морепродукты, локальные и авторские блюда на открытых террасах или в приватных кабанах.',
-   hl:['Морепродукты и локальные блюда','Ужин на террасе или в приватной кабане','Богатый выбор вин'],
+  {n:6, x:763, y:640, lat:4.1201843, lng:73.4370235, cat:'dining', name:'Sand', hours:'19:00 – 22:00', type:'Seafood, International', dress:'Barefoot and ready to feast',
+   desc:'Dinner right at the water\u2019s edge — seafood, local and signature dishes on open-air decks or private cabanas.',
+   hl:['Seafood and local dishes','Dine on the deck or in a private cabana','An extensive wine selection'],
    menu:[
-     {name:'Pacific Rock Oyster', desc:'Полдюжины устриц со льдом', price:'$55'},
+     {name:'Pacific Rock Oyster', desc:'Half a dozen oysters on ice', price:'$55'},
      {name:'Seared Scallops', price:'$45'},
-     {name:'Maldivian Baked Reef Fish', desc:'В банановом листе, чесночный рис', price:'$52'},
+     {name:'Maldivian Baked Reef Fish', desc:'Baked in banana leaf, garlic rice', price:'$52'},
      {name:'Braised Beef Short Ribs', price:'$54'}
    ],
    pdfs:[{label:'Food Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Sand-Menu-Food.pdf'},
@@ -405,58 +405,58 @@ const pois = [
          {label:'Kids Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Sand-Kids-Menu.pdf'}]},
 
   {n:7, x:799, y:752, cat:'dining', name:'Sora', hours:'19:00 – 22:00', type:'Japanese & Nikkei', dress:'Resort chic',
-   desc:'Японская кухня с перуанским (Nikkei) акцентом на воде — теппаньяки-шоу и суши прямо у стола.',
-   hl:['Над лагуной, рифовые акулы и скаты рядом','Omakase от шефа или a la carte','Японские коктейли и сакэ'],
+   desc:'Japanese cuisine with a Peruvian (Nikkei) accent, on the water — teppanyaki theatre and sushi right at your table.',
+   hl:['Perched above the lagoon, reef sharks and rays nearby','Chef\u2019s omakase or a la carte','Japanese cocktails and sake'],
    menu:[
-     {name:'Teppanyaki Set Menu', desc:'3 блюда: эдамаме, мисо-суп, нигири + основное', price:'$115'},
-     {name:'+ Wagyu Beef Striploin', desc:'доп. к сету', price:'+$45'},
-     {name:'+ Half Lobster Tail', desc:'доп. к сету', price:'+$65'},
-     {name:'Wasabi Chocolate Cremieux', desc:'десерт', price:'вкл. в сет'}
+     {name:'Teppanyaki Set Menu', desc:'3 courses: edamame, miso soup, nigiri + main', price:'$115'},
+     {name:'+ Wagyu Beef Striploin', desc:'add-on to the set', price:'+$45'},
+     {name:'+ Half Lobster Tail', desc:'add-on to the set', price:'+$65'},
+     {name:'Wasabi Chocolate Cremieux', desc:'dessert', price:'included in set'}
    ],
    pdfs:[{label:'A La Carte / Set Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/SORA-MENU-A-LA-CARTE-SET-.pdf'}]},
 
-  {n:8, x:836, y:639, cat:'active', name:'Glide (Water Sports)', hours:'Световой день, по расписанию', type:'Моторные и парусные виды спорта',
-   desc:'Вейкбординг, флайборд, Seabob, джет-ски, кайт и виндсёрфинг — весь спектр водного адреналина острова.',
-   hl:['Вейкбординг, флайборд, тюбинг за катером','Seabob по рифу и лагуне','Джет-ски и виндспорт']},
+  {n:8, x:836, y:639, cat:'active', name:'Glide (Water Sports)', hours:'Daylight hours, by schedule', type:'Motorised & sailing water sports',
+   desc:'Wakeboarding, flyboarding, Seabob, jet ski, kite and windsurfing — the island\u2019s full range of water thrills.',
+   hl:['Wakeboarding, flyboarding, towable tubing','Seabob rides over the reef and lagoon','Jet ski and wind sports']},
 
-  {n:9, x:1031,y:524, cat:'active', name:'Fitness Centre', hours:'Уточняйте на ресепшен', type:'Тренажёрный зал',
-   desc:'Зал с оборудованием Technogym Kinesis — тренировки, которые «двигаются вместе с телом».',
-   hl:['Продвинутое оборудование Kinesis','Персональные тренеры','Пространство для силовых и кардио-тренировок']},
+  {n:9, x:1031,y:524, cat:'active', name:'Fitness Centre', hours:'Check with reception', type:'Gym',
+   desc:'A gym equipped with Technogym Kinesis — workouts that move with your body.',
+   hl:['Advanced Kinesis equipment','Personal trainers','A space for strength and cardio training']},
 
-  {n:10, x:1109,y:428, cat:'dining', name:'Chill Bar', hours:'12:00 – 19:00', type:'Тапас и коктейли', dress:'As you wish',
-   desc:'Бар на самом конце восточного пирса — лучшая точка острова для заката.',
-   hl:['Одни из лучших закатов на острове','Тапас и шеринг-плейты','Авторские коктейли с местным акцентом'],
+  {n:10, x:1109,y:428, cat:'dining', name:'Chill Bar', hours:'12:00 – 19:00', type:'Tapas & Cocktails', dress:'As you wish',
+   desc:'A bar at the very tip of the east jetty — the island\u2019s best sunset spot.',
+   hl:['Some of the best sunsets on the island','Tapas and sharing plates','Signature cocktails with a local twist'],
    menu:[
      {name:'Fried Halloumi Cheese', price:'$17'},
-     {name:'Chicken/Lamb Skewers', desc:'Питта, цацики', price:'$26'},
+     {name:'Chicken/Lamb Skewers', desc:'Pita, tzatziki', price:'$26'},
      {name:'Seafood Ceviche', price:'$18'},
-     {name:'Gambas al Ajillo', desc:'Креветки с чесноком', price:'$22'}
+     {name:'Gambas al Ajillo', desc:'Garlic prawns', price:'$22'}
    ],
-   menuNote:'Тапас-меню подаётся 12:30–18:00',
+   menuNote:'Tapas menu served 12:30–18:00',
    pdfs:[{label:'Tapas Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Chill-Bar-Menu.pdf'}]},
 
-  {n:11, x:538, y:509, cat:'active', name:'LIME Spa', hours:'Starlight Night Spa — с 18:00 (бронь за 24ч)', type:'СПА и велнес',
-   desc:'Спа над лагуной: массажи, скрабы, обёртывания и уходовые ритуалы Elemis, Aromatherapy Associates, Obsidian.',
-   hl:['Кабинеты над бирюзовой лагуной','Elemis, Aromatherapy Associates, Obsidian, Margaret Dabbs','Starlight Night Spa под звёздами'],
+  {n:11, x:538, y:509, cat:'active', name:'LIME Spa', hours:'Starlight Night Spa — from 18:00 (book 24h ahead)', type:'Spa & Wellness',
+   desc:'A spa over the lagoon: massages, scrubs, wraps and rituals by Elemis, Aromatherapy Associates and Obsidian.',
+   hl:['Treatment rooms over the turquoise lagoon','Elemis, Aromatherapy Associates, Obsidian, Margaret Dabbs','Starlight Night Spa under the stars'],
    menu:[
-     {name:'NIVA Signature Massage', desc:'Кокосовые инструменты и масло', price:'90 / 105 мин'},
-     {name:'Memories of Maldives (LIME Journey)', desc:'Скраб + массаж + кокон + ванна на двоих', price:'150 мин'},
-     {name:'Soul of the Ocean', desc:'Розовый скраб + массаж + лифтинг-уход', price:'120 мин'},
-     {name:'Relax & Sleep', price:'90 / 105 мин'}
+     {name:'NIVA Signature Massage', desc:'Coconut tools and oil', price:'90 / 105 min'},
+     {name:'Memories of Maldives (LIME Journey)', desc:'Scrub + massage + cocoon + bath for two', price:'150 min'},
+     {name:'Soul of the Ocean', desc:'Rose scrub + massage + lifting facial', price:'120 min'},
+     {name:'Relax & Sleep', price:'90 / 105 min'}
    ],
-   menuNote:'Цены на процедуры — по запросу на ресепшен спа',
+   menuNote:'Treatment prices available on request at the spa reception',
    pdfs:[{label:'Spa Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2026/03/LIMESpaMenuWeb89.pdf'}]},
 
-  {n:12, x:658, y:624, cat:'active', name:'Immersion (Dive Centre)', hours:'Утренние и дневные погружения по расписанию', type:'Дайвинг и снорклинг',
-   desc:'Дайв-центр острова: погружения в каналах, у рифов, пещер и затонувшего судна Bolifushi.',
-   hl:['Утренние дабл-дайвы в Vaadhoo Channel','Риф Bolifushi, пещеры Velassaru','Курсы Open Water, ночные погружения']},
+  {n:12, x:658, y:624, cat:'active', name:'Immersion (Dive Centre)', hours:'Morning & day dives, by schedule', type:'Diving & Snorkelling',
+   desc:'The island\u2019s dive centre: dives in channels, reefs, caves and the Bolifushi wreck.',
+   hl:['Morning double dives in the Vaadhoo Channel','Bolifushi wreck, Velassaru caves','Open Water courses, night dives']},
 
-  {n:13, x:978, y:509, cat:'active', name:'Tennis Court', hours:'По расписанию (корт с подсветкой)', type:'Спорт',
-   desc:'Корт с подсветкой в партнёрстве с Sunball Tennis Academy — групповые занятия и приватный коучинг.',
-   hl:['Игра и утром, и вечером — есть подсветка','Групповые и детские сессии','Приватный коучинг с профи']},
+  {n:13, x:978, y:509, cat:'active', name:'Tennis Court', hours:'By schedule (floodlit court)', type:'Sport',
+   desc:'A floodlit court in partnership with Sunball Tennis Academy — group sessions and private coaching.',
+   hl:['Play morning or night — the court is floodlit','Group and kids\u2019 sessions','Private coaching with pros']},
 
-  {n:14, x:729, y:512, cat:'service', name:'Clinic', hours:'По вызову', desc:'Медицинский кабинет острова.'},
-  {n:15, x:750, y:512, cat:'service', name:'AED', hours:'—', desc:'Автоматический дефибриллятор, точка на схеме эвакуации.'}
+  {n:14, x:729, y:512, cat:'service', name:'Clinic', hours:'On call', desc:'The island\u2019s medical clinic.'},
+  {n:15, x:750, y:512, cat:'service', name:'AED', hours:'—', desc:'Automated External Defibrillator, marked on the evacuation map.'}
 ];
 
 const svgNS = "http://www.w3.org/2000/svg";
@@ -563,14 +563,14 @@ function openSheet(p){
   if(p.menu && p.menu.length){
     menuWrap.innerHTML = `
       <div class="menu-block">
-        <div class="menu-h">Меню (примеры блюд)</div>
+        <div class="menu-h">Menu (sample dishes)</div>
         ${p.menuNote ? `<div class="menu-note">${p.menuNote}</div>` : ''}
         ${p.menu.map(m=>`
           <div class="menu-item">
             <div><div class="mi-name">${m.name}</div>${m.desc?`<div class="mi-desc">${m.desc}</div>`:''}</div>
             <div class="mi-price">${m.price}</div>
           </div>`).join('')}
-        <div class="price-footnote">Цены в USD, включают 10% сервисный сбор и 17% гос. налог</div>
+        <div class="price-footnote">Prices in USD, include 10% service charge and 17% government tax</div>
       </div>`;
   } else { menuWrap.innerHTML = ''; }
 
@@ -623,7 +623,7 @@ let map, youMarker, accuracyCircle, watchId = null, followMode = true;
 function initLeaflet(){
   map = L.map('leafletMap', {zoomControl:false, attributionControl:true}).setView([4.1206, 73.4368], 17);
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom:20, maxNativeZoom:17, attribution:'Esri World Imagery · координаты уточнены по Google Maps'
+    maxZoom:20, maxNativeZoom:17, attribution:'Esri World Imagery · coordinates verified via Google Maps'
   }).addTo(map);
   L.control.zoom({position:'bottomleft'}).addTo(map);
   map.on('dragstart', ()=>{ followMode = false; });
@@ -656,7 +656,7 @@ function startGeo(){
   const banner = document.getElementById('geoBanner');
   if(!('geolocation' in navigator)){
     banner.classList.add('show');
-    document.getElementById('geoBannerText').textContent = 'Геолокация не поддерживается этим браузером.';
+    document.getElementById('geoBannerText').textContent = 'Geolocation is not supported by this browser.';
     return;
   }
   if(watchId !== null) navigator.geolocation.clearWatch(watchId);
@@ -696,11 +696,11 @@ function onGeoError(err){
   banner.classList.add('show');
   document.getElementById('geoFab').classList.remove('active');
   if(err.code === err.PERMISSION_DENIED){
-    textEl.textContent = 'Доступ к геолокации запрещён. Разреши его в настройках браузера, чтобы видеть себя на карте.';
+    textEl.textContent = 'Location access denied. Enable it in your browser settings to see yourself on the map.';
   } else if(err.code === err.POSITION_UNAVAILABLE){
-    textEl.textContent = 'Не удаётся определить местоположение (нет сигнала GPS). Попробуй выйти на улицу или обновить.';
+    textEl.textContent = 'Can\u2019t determine your location (no GPS signal). Try going outside or refreshing.';
   } else {
-    textEl.textContent = 'Не удалось получить геопозицию. Попробуй ещё раз.';
+    textEl.textContent = 'Couldn\u2019t get your location. Please try again.';
   }
 }
 
