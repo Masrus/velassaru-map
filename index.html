@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Flex:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0..1,0" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
   :root{
     /* ---- Material 3 dark theme, teal seed ---- */
@@ -165,6 +167,53 @@
   @media (min-width:640px){
     .sheet{left:auto;right:24px;bottom:24px;border-radius:var(--shape-xl);width:420px;max-height:80vh;}
   }
+
+  /* ---- view segmented toggle ---- */
+  .segrow{display:flex;gap:0;padding:10px 16px 12px;background:var(--md-surface-container);}
+  .seg{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+    height:38px;font-size:13px;font-weight:600;color:var(--md-on-surface-variant);
+    background:var(--md-surface-container-high);border:1px solid var(--md-outline-variant);
+    cursor:pointer;user-select:none;
+  }
+  .seg:first-child{border-radius:10px 0 0 10px;border-right:none;}
+  .seg:last-child{border-radius:0 10px 10px 0;}
+  .seg.active{background:var(--md-primary);color:var(--md-on-primary);border-color:var(--md-primary);}
+  .seg .msi{font-size:18px;}
+
+  /* ---- satellite view ---- */
+  #satelliteView{display:none;}
+  #leafletMap{width:100%;height:52vh;min-height:340px;}
+  .leaflet-tile-pane{filter:saturate(1.05) brightness(0.96);}
+  .leaflet-control-attribution{background:rgba(11,17,17,0.75)!important;color:rgba(222,228,227,0.6)!important;font-size:9px!important;}
+  .leaflet-control-attribution a{color:rgba(222,228,227,0.8)!important;}
+
+  .geo-banner{
+    display:none;margin:14px 16px 0;padding:12px 14px;border-radius:var(--shape-lg);
+    background:var(--md-surface-container-highest);color:var(--md-on-surface-variant);
+    font-size:12px;line-height:1.5;gap:10px;align-items:flex-start;
+  }
+  .geo-banner.show{display:flex;}
+  .geo-banner .msi{color:var(--md-tertiary);font-size:20px;flex:0 0 auto;}
+  .geo-banner button{
+    margin-top:6px;border:none;background:var(--md-primary);color:var(--md-on-primary);
+    font-size:12px;font-weight:700;padding:7px 12px;border-radius:8px;cursor:pointer;
+  }
+
+  .geo-fab{
+    position:absolute;right:16px;bottom:16px;z-index:15;
+    width:48px;height:48px;border-radius:14px;
+    background:var(--md-surface-container-highest);color:var(--md-on-surface);
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--e2);cursor:pointer;
+  }
+  .geo-fab.active{background:var(--md-primary);color:var(--md-on-primary);}
+
+  .you-dot{width:18px;height:18px;border-radius:50%;background:#4285F4;border:3px solid #fff;box-shadow:0 0 0 2px rgba(66,133,244,0.4);}
+  .you-pulse{width:18px;height:18px;border-radius:50%;background:rgba(66,133,244,0.35);animation:pulse 1.8s ease-out infinite;}
+  @keyframes pulse{0%{transform:scale(0.6);opacity:0.9;}100%{transform:scale(2.6);opacity:0;}}
+
+  .sat-note{margin:12px 16px 0;font-size:11.5px;line-height:1.5;color:var(--md-on-surface-variant);}
+  .sat-legend{padding:14px 16px 0;}
 </style>
 </head>
 <body>
@@ -175,6 +224,12 @@
   <div class="appbar-sub">Часы работы, дресс-код и меню с ценами — тапни на метку</div>
 </div>
 
+<div class="segrow" id="viewToggle">
+  <div class="seg active" data-view="schematic"><span class="msi">map</span>Схема отеля</div>
+  <div class="seg" data-view="satellite"><span class="msi">my_location</span>Спутник · моё место</div>
+</div>
+
+<div id="schematicView">
 <div class="chiprow" id="chips"></div>
 
 <div class="mapzone">
@@ -230,6 +285,34 @@
   <div class="phone"><span class="msi">emergency</span> Экстренный номер острова: 6656166</div>
 </div>
 <div class="footer-space"></div>
+</div><!-- /schematicView -->
+
+<div id="satelliteView">
+  <div class="geo-banner" id="geoBanner">
+    <span class="msi">info</span>
+    <div>
+      <span id="geoBannerText">Разреши доступ к геолокации, чтобы видеть себя на карте острова.</span>
+      <div><button id="geoRetryBtn" onclick="startGeo()">Включить геолокацию</button></div>
+    </div>
+  </div>
+  <div class="mapzone" style="position:relative;">
+    <div id="leafletMap"></div>
+    <div class="geo-fab" id="geoFab" onclick="recenter()"><span class="msi">my_location</span></div>
+  </div>
+  <div class="sat-note">
+    <span class="msi" style="font-size:15px;vertical-align:-3px;">verified</span>
+    Показаны только точки с подтверждёнными координатами (Google Maps): Reception, Fen Bar, Turquoise, Etesian, Sand.
+    Остальные объекты (Vela, Sora, Chill Bar, LIME Spa, дайв-центр, теннис, фитнес) — координаты не подтверждены,
+    смотри их на вкладке «Схема отеля».
+  </div>
+  <div class="sat-legend">
+    <div class="card">
+      <div class="card-title">Точки на спутниковой карте</div>
+      <div id="satLegendList"></div>
+    </div>
+  </div>
+  <div class="footer-space"></div>
+</div><!-- /satelliteView -->
 
 <div class="scrim" id="scrim" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet">
@@ -257,9 +340,9 @@ const cats = {
 };
 
 const pois = [
-  {n:1, x:713, y:553, cat:'service', name:'Reception', hours:'24/7', desc:'Ресепшен острова — точка прибытия, старт всех маршрутов и главного пирса.'},
+  {n:1, x:713, y:553, lat:4.1211602, lng:73.4370184, cat:'service', name:'Reception', hours:'24/7', desc:'Ресепшен острова — точка прибытия, старт всех маршрутов и главного пирса.'},
 
-  {n:2, x:708, y:584, cat:'dining', name:'Fen Bar', hours:'11:00 – 00:00', type:'Коктейли и напитки', dress:'Barefoot is better',
+  {n:2, x:708, y:584, lat:4.1204977, lng:73.4364514, cat:'dining', name:'Fen Bar', hours:'11:00 – 00:00', type:'Коктейли и напитки', dress:'Barefoot is better',
    desc:'Современный лаунж-бар у лагуны: авторские коктейли, лёгкие закуски и вечерняя живая музыка.',
    hl:['Напитки и лёгкие закуски весь день','Авторские настойки миксологов','Живая музыка по вечерам'],
    menu:[
@@ -272,7 +355,7 @@ const pois = [
    pdfs:[{label:'Cocktail Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Signature-Cocktail-Menu-fen-bar.pdf'},
          {label:'Pool Bar Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Infinity-Pool-Bar-Menu.pdf'}]},
 
-  {n:3, x:733, y:600, cat:'dining', name:'Turquoise', hours:'12:00 – 22:00', type:'International', dress:'Island ease',
+  {n:3, x:733, y:600, lat:4.1202455, lng:73.4369572, cat:'dining', name:'Turquoise', hours:'12:00 – 22:00', type:'International', dress:'Island ease',
    desc:'Непринуждённый ресторан у пляжа со смешением средиземноморской, азиатской и западной кухни.',
    hl:['Расслабленный beachside-формат','Смешение кухонь: Mediterranean · Asian · Western','Отличная точка понаблюдать за жизнью острова'],
    menu:[
@@ -295,7 +378,7 @@ const pois = [
    ],
    pdfs:[{label:'Beverage Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Vela-Beverage-Menu-.pdf'}]},
 
-  {n:5, x:819, y:605, cat:'dining', name:'Etesian', hours:'19:00 – 22:00', type:'European & Mediterranean', dress:'Island chic',
+  {n:5, x:819, y:605, lat:4.1207760, lng:73.4370542, cat:'dining', name:'Etesian', hours:'19:00 – 22:00', type:'European & Mediterranean', dress:'Island chic',
    desc:'Fine dining c шеф-сет-меню и большим винным погребом — для особых ужинов.',
    hl:['Сет-меню от шефа','Богатая винная карта','Идеально для приватного ужина'],
    menu:[
@@ -308,7 +391,7 @@ const pois = [
    pdfs:[{label:'Set Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Etesian-Menu.pdf'},
          {label:'Beverage Menu', url:'https://www.nivavelassaru.com/wp-content/uploads/2025/09/Etesian-Beverage-Menu-.pdf'}]},
 
-  {n:6, x:763, y:640, cat:'dining', name:'Sand', hours:'19:00 – 22:00', type:'Seafood, International', dress:'Barefoot и готовность к пиршеству',
+  {n:6, x:763, y:640, lat:4.1201843, lng:73.4370235, cat:'dining', name:'Sand', hours:'19:00 – 22:00', type:'Seafood, International', dress:'Barefoot и готовность к пиршеству',
    desc:'Ужин у самой кромки воды — морепродукты, локальные и авторские блюда на открытых террасах или в приватных кабанах.',
    hl:['Морепродукты и локальные блюда','Ужин на террасе или в приватной кабане','Богатый выбор вин'],
    menu:[
@@ -510,6 +593,124 @@ function makeRipple(el, evt){
   el.appendChild(span);
   setTimeout(()=>span.remove(), 500);
 }
+
+/* ================= View toggle ================= */
+const segs = document.querySelectorAll('.seg');
+const schematicView = document.getElementById('schematicView');
+const satelliteView = document.getElementById('satelliteView');
+let leafletInited = false;
+
+segs.forEach(seg=>{
+  seg.onclick = (e)=>{
+    makeRipple(seg, e);
+    segs.forEach(s=>s.classList.remove('active'));
+    seg.classList.add('active');
+    if(seg.dataset.view === 'schematic'){
+      schematicView.style.display = '';
+      satelliteView.style.display = 'none';
+    } else {
+      schematicView.style.display = 'none';
+      satelliteView.style.display = 'block';
+      if(!leafletInited){ initLeaflet(); leafletInited = true; }
+      setTimeout(()=>{ if(map) map.invalidateSize(); }, 80);
+    }
+  };
+});
+
+/* ================= Satellite / live geolocation ================= */
+let map, youMarker, accuracyCircle, watchId = null, followMode = true;
+
+function initLeaflet(){
+  map = L.map('leafletMap', {zoomControl:false, attributionControl:true}).setView([4.1206, 73.4368], 18);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom:20, attribution:'Esri World Imagery · координаты уточнены по Google Maps'
+  }).addTo(map);
+  L.control.zoom({position:'bottomleft'}).addTo(map);
+  map.on('dragstart', ()=>{ followMode = false; });
+
+  const satPois = pois.filter(p=>p.lat && p.lng);
+  const satLegendList = document.getElementById('satLegendList');
+  satPois.forEach((p,i)=>{
+    const c = cats[p.cat];
+    const icon = L.divIcon({
+      className:'',
+      html:`<div style="width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c.color};border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;">
+              <span style="transform:rotate(45deg);color:${c.dark};font-weight:700;font-size:12px;font-family:Roboto;">${p.n}</span>
+            </div>`,
+      iconSize:[30,30], iconAnchor:[15,28]
+    });
+    L.marker([p.lat,p.lng], {icon}).addTo(map).on('click', ()=>openSheet(p));
+
+    const row = document.createElement('div');
+    row.className='list-item';
+    row.innerHTML = `<span class="num" style="background:${c.color};color:${c.dark}">${p.n}</span><span class="name">${p.name}</span><span class="hrs">${p.hours&&p.hours.length<18?p.hours:''}</span>`;
+    row.onclick = ()=>openSheet(p);
+    satLegendList.appendChild(row);
+    if(i<satPois.length-1){ const d=document.createElement('div'); d.className='divider'; satLegendList.appendChild(d); }
+  });
+
+  startGeo();
+}
+
+function startGeo(){
+  const banner = document.getElementById('geoBanner');
+  if(!('geolocation' in navigator)){
+    banner.classList.add('show');
+    document.getElementById('geoBannerText').textContent = 'Геолокация не поддерживается этим браузером.';
+    return;
+  }
+  if(watchId !== null) navigator.geolocation.clearWatch(watchId);
+  watchId = navigator.geolocation.watchPosition(onGeoSuccess, onGeoError, {
+    enableHighAccuracy:true, maximumAge:2000, timeout:15000
+  });
+}
+
+function onGeoSuccess(pos){
+  const banner = document.getElementById('geoBanner');
+  banner.classList.remove('show');
+  document.getElementById('geoFab').classList.add('active');
+
+  const {latitude, longitude, accuracy} = pos.coords;
+  const latlng = [latitude, longitude];
+
+  if(!youMarker){
+    const icon = L.divIcon({
+      className:'', html:`<div style="position:relative;width:18px;height:18px;">
+        <div class="you-pulse" style="position:absolute;top:0;left:0;"></div>
+        <div class="you-dot" style="position:absolute;top:0;left:0;"></div>
+      </div>`, iconSize:[18,18], iconAnchor:[9,9]
+    });
+    youMarker = L.marker(latlng, {icon, zIndexOffset:1000}).addTo(map);
+    accuracyCircle = L.circle(latlng, {radius:accuracy, color:'#4285F4', weight:1, fillColor:'#4285F4', fillOpacity:0.12}).addTo(map);
+  } else {
+    youMarker.setLatLng(latlng);
+    accuracyCircle.setLatLng(latlng);
+    accuracyCircle.setRadius(accuracy);
+  }
+  if(followMode) map.setView(latlng, Math.max(map.getZoom(), 18));
+}
+
+function onGeoError(err){
+  const banner = document.getElementById('geoBanner');
+  const textEl = document.getElementById('geoBannerText');
+  banner.classList.add('show');
+  document.getElementById('geoFab').classList.remove('active');
+  if(err.code === err.PERMISSION_DENIED){
+    textEl.textContent = 'Доступ к геолокации запрещён. Разреши его в настройках браузера, чтобы видеть себя на карте.';
+  } else if(err.code === err.POSITION_UNAVAILABLE){
+    textEl.textContent = 'Не удаётся определить местоположение (нет сигнала GPS). Попробуй выйти на улицу или обновить.';
+  } else {
+    textEl.textContent = 'Не удалось получить геопозицию. Попробуй ещё раз.';
+  }
+}
+
+function recenter(){
+  followMode = true;
+  if(youMarker) map.setView(youMarker.getLatLng(), 19);
+  else startGeo();
+}
+// stop following if the user manually drags the map
+document.addEventListener('DOMContentLoaded', ()=>{});
 </script>
 </body>
 </html>
