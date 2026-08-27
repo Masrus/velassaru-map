@@ -621,9 +621,9 @@ segs.forEach(seg=>{
 let map, youMarker, accuracyCircle, watchId = null, followMode = true;
 
 function initLeaflet(){
-  map = L.map('leafletMap', {zoomControl:false, attributionControl:true}).setView([4.1206, 73.4368], 18);
+  map = L.map('leafletMap', {zoomControl:false, attributionControl:true}).setView([4.1206, 73.4368], 17);
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom:20, attribution:'Esri World Imagery · координаты уточнены по Google Maps'
+    maxZoom:20, maxNativeZoom:17, attribution:'Esri World Imagery · координаты уточнены по Google Maps'
   }).addTo(map);
   L.control.zoom({position:'bottomleft'}).addTo(map);
   map.on('dragstart', ()=>{ followMode = false; });
